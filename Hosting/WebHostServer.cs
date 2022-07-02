@@ -78,17 +78,31 @@ namespace VRising.WebServer.Hosting
 
             var task = new RisingTask { ResultFunction = resultFunction };
             TaskRunner.TaskQueue.Enqueue(task);
-            object result;
+            RisingTaskResult result;
             while (!TaskRunner.TaskResults.TryGetValue(task.TaskId, out result))
             {
                 await Task.Delay(1);
             }
 
-            response.ContentType = "application/json";
-            response.ContentEncoding = Encoding.UTF8;
-            var content = JsonConvert.SerializeObject(result, Formatting.Indented);
-            response.OutputStream.Write(Encoding.UTF8.GetBytes(content));
-            response.Close();
+            if (result.Exception != null)
+            {
+                response.ContentType = "application/json";
+                response.ContentEncoding = Encoding.UTF8;
+                response.StatusCode = 500;
+                var exceptionContent = JsonConvert.SerializeObject(result.Exception, Formatting.Indented);
+                response.OutputStream.Write(Encoding.UTF8.GetBytes(exceptionContent));
+                response.Close();
+
+            }
+            else
+            {
+                response.ContentType = "application/json";
+                response.ContentEncoding = Encoding.UTF8;
+                response.StatusCode = 200;
+                var content = JsonConvert.SerializeObject(result.Result, Formatting.Indented);
+                response.OutputStream.Write(Encoding.UTF8.GetBytes(content));
+                response.Close();
+            }
         }
 
         public class RouteHelper

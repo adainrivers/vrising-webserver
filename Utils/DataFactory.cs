@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using ProjectM;
 using ProjectM.Network;
 using Unity.Collections;
@@ -33,5 +34,11 @@ namespace VRising.WebServer.Utils
             return result;
         }
 
+        internal static List<string> ThrowException()
+        {
+            throw new NotImplementedException("This is not implemented",
+                new InvalidOperationException("Told you it's not implemented", 
+                    new Exception("This goes deeper.")));
+        }
     }
 }

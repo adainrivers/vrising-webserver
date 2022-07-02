@@ -37,6 +37,7 @@ namespace VRising.WebServer
             WebServer.Start();
 
             WebServer.Router.MapGet("/users", DataFactory.GetUsers);
+            WebServer.Router.MapGet("/throw", DataFactory.ThrowException);
 
         }
 
